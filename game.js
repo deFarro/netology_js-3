@@ -7,6 +7,7 @@ class Vector {
   }
   plus(vector) {
     if (!vector instanceof Vector) {
+      // Тесты не ловят брошенные исключения
       throw new Error('Можно прибавлять к вектору только вектор типа Vector');
     }
     let sumOfVectors = new Vector;
@@ -177,3 +178,52 @@ function mapActorCoordinates(actor) {
 // ];
 // const level = new Level(grid);
 // runLevel(level, DOMDisplay);
+
+class LevelParser {
+  constructor(library) {
+    this.library = library;
+  }
+  actorFromSymbol(symbol) {
+    return symbol ? this.library[symbol] ? this.library[symbol] : undefined : undefined;
+  }
+  obstacleFromSymbol(symbol) {
+    switch (symbol) {
+      case 'x':
+        return 'wall';
+      case '!':
+        return 'lava';
+      default:
+        return;
+    }
+  }
+  createGrid(plan) {
+    return plan.map(line => line.split('')
+      .map(symbol => this.obstacleFromSymbol(symbol)));
+  }
+  createActors(plan) {
+    if (plan.length === 0 || !this.library) {
+      return [];
+    }
+    const actors = [], field =  plan.map(line => line.split(''));
+    for (let line of field) {
+      const y = field.indexOf(line);
+      for (let index in line) {
+        const x = parseInt(index);
+        let symbol = line[index];
+        if (!this.library[symbol] || typeof this.library[symbol] !== 'function') {
+          continue;
+        }
+        else {
+          const currentConstructor = this.actorFromSymbol(symbol);
+          if (currentConstructor.prototype instanceof Actor || currentConstructor === Actor) {
+            actors.push(new currentConstructor(new Vector(x, y)));
+          }
+        }
+      }
+    }
+    return actors;
+  }
+  parse(plan) {
+    return new Level(this.createGrid(plan), this.createActors(plan));
+  }
+}
