@@ -62,30 +62,25 @@ class Actor {
   }
 }
 
-const DIRECTIONS = [['top', 'bottom'], ['left', 'right'], ['bottom', 'top'], ['right', 'left']];
+const DIRECTIONS = [['top', 'bottom'], ['left', 'right']];
 
 function compareActors(actor, obstacle) {
-  if (obstacle.pos.x == actor.pos.x && obstacle.pos.y == actor.pos.y) {
+  if (actor.pos.x === obstacle.pos.x && actor.pos.y === obstacle.pos.y) {
     return true;
   }
   // Проверяем в отдельном цикле на наличие смежных границ
   for (let side of DIRECTIONS) {
-    if (obstacle[side[0]] === actor[side[1]]) {
+    if (actor[side[1]] === obstacle[side[0]] || actor[side[0]] === obstacle[side[1]]) {
       return false;
     }
   }
-  // Если границ нет, то проверяем на пересечения. У двух последних массивов сторон другой паттерн сравнения
+  // Если границ нет, то проверяем на пересечения
   for (let side of DIRECTIONS) {
-    if (DIRECTIONS.indexOf(side) > 1) {
-      if (obstacle[side[0]] > actor[side[1]] && obstacle[side[0]] < actor[side[0]]) {
-        return true;
-      }
-    }
-    if (obstacle[side[0]] > actor[side[0]] && obstacle[side[0]] < actor[side[1]]) {
-      return true;
+    if (actor[side[0]] > obstacle[side[1]] || actor[side[1]] < obstacle[side[0]]) {
+      return false;
     }
   }
-  return false;
+  return true;
 }
 
 class Level {
@@ -125,14 +120,14 @@ class Level {
       throw new Error;
     }
     const ghostActor = new Actor(target, size);
-    if (ghostActor.left < 0 || ghostActor.right >= this.width || ghostActor.top < 0) {
+    if (ghostActor.left < 0 || ghostActor.right > this.width || ghostActor.top < 0) {
       return 'wall';
     }
-    if (ghostActor.bottom >= this.height) {
+    if (ghostActor.bottom > this.height) {
       return 'lava';
     }
     for (let spot of mapActorCoordinates(ghostActor)) {
-      return this.grid[Math.floor(spot.x)][Math.floor(spot.y)] ? this.grid[Math.floor(spot.x)][Math.floor(spot.y)] : undefined;
+      return this.grid[Math.round(spot.y)][Math.round(spot.x)] ? this.grid[Math.round(spot.y)][Math.round(spot.x)] : undefined;
     }
   }
   removeActor(actor) {
@@ -164,20 +159,13 @@ class Level {
 // Функция для создания массива со всеми координатами заданной объектом Actor области
 function mapActorCoordinates(actor) {
   const coordinates = [];
-  for (let x = 0; x <= actor.size.x ; x++) {
-    for (let y = 0; y <= actor.size.y ; y++) {
+  for (let y = 0; y <= actor.size.x ; y++) {
+    for (let x = 0; x <= actor.size.y ; x++) {
     coordinates.push({'x': actor.left + x, 'y': actor.top + y});
     }
   }
   return coordinates;
 }
-
-// const grid = [
-//   new Array(3),
-//   ['wall', 'wall', 'lava']
-// ];
-// const level = new Level(grid);
-// runLevel(level, DOMDisplay);
 
 class LevelParser {
   constructor(library) {
@@ -227,3 +215,131 @@ class LevelParser {
     return new Level(this.createGrid(plan), this.createActors(plan));
   }
 }
+
+class Fireball extends Actor {
+  constructor(position, speed) {
+    super(position, new Vector(1, 1), speed);
+  }
+  get type() {
+    return 'fireball';
+  }
+  getNextPosition(time = 1) {
+    const x = this.pos.x + this.speed.x * time;
+    const y = this.pos.y + this.speed.y * time;
+    return new Vector(x, y);
+  }
+  handleObstacle() {
+    this.speed.x *= -1;
+    this.speed.y *= -1;
+  }
+  act(time, level) {
+    const target = this.getNextPosition(time);
+    if (level.obstacleAt(target, this.size)) {
+      this.handleObstacle();
+    }
+    else {
+      this.pos = target;
+    }
+  }
+}
+
+class HorizontalFireball extends Fireball {
+  constructor(position) {
+    super(position, new Vector(2, 0));
+  }
+}
+
+class VerticalFireball extends Fireball {
+  constructor(position) {
+    super(position, new Vector(0, 2));
+  }
+}
+
+class FireRain extends Fireball {
+  constructor(position) {
+    super(position, new Vector(0, 3));
+    this.initialPosition = position;
+  }
+  handleObstacle() {
+    this.pos = this.initialPosition;
+  }
+}
+
+class Coin extends Actor {
+  constructor(position = new Vector()) {
+    super(position.plus(new Vector(0.2, 0.1)), new Vector(0.6, 0.6));
+    this.springSpeed = 8;
+    this.springDist = 0.07;
+    this.spring = Math.random() * (2 * Math.PI);
+    this.initialPosition = this.pos;
+  }
+  get type() {
+    return 'coin';
+  }
+  updateSpring(time = 1) {
+    this.spring += this.springSpeed * time;
+  }
+  getSpringVector() {
+    return new Vector(0, Math.sin(this.spring) * this.springDist);
+  }
+  getNextPosition(time = 1) {
+    this.spring += this.springSpeed * time;
+    return this.pos.plus(this.getSpringVector());
+  }
+  act(time) {
+    this.pos = this.getNextPosition(time);
+  }
+}
+
+class Player extends Actor {
+  constructor(position = new Vector()) {
+    super(position.plus(new Vector(0, -0.5)), new Vector(0.8, 1.5), new Vector(0, 0))
+  }
+  get type() {
+    return 'player';
+  }
+}
+
+const actorDict = {
+  '@': Player,
+  'v': FireRain,
+  '=': HorizontalFireball,
+  '|': VerticalFireball,
+  'o': Coin
+}
+
+// Проверка кода без loadLevels
+
+// const schemas = [
+//   [
+//     '         ',
+//     '         ',
+//     '    =    ',
+//     '       o ',
+//     '     !xxx',
+//     ' @       ',
+//     'xxx!     ',
+//     '         '
+//   ],
+//   [
+//     '      v  ',
+//     '         ',
+//     '  v      ',
+//     '        o',
+//     '        x',
+//     '@   x    ',
+//     'x        ',
+//     '         '
+//   ]
+// ];
+//
+// const parser = new LevelParser(actorDict);
+// runGame(schemas, parser, DOMDisplay)
+//   .then(() => console.log('Вы выиграли приз!'));
+
+// Проверка кода с loadLevels
+
+const parser = new LevelParser(actorDict);
+
+loadLevels().then(levels => runGame(JSON.parse(levels), parser, DOMDisplay)
+      .then(() => console.log('Вы выиграли приз!')));
