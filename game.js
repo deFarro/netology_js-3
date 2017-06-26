@@ -126,10 +126,25 @@ class Level {
     if (ghostActor.bottom > this.height) {
       return 'lava';
     }
-    for (let spot of mapActorCoordinates(ghostActor)) {
-      return this.grid[Math.round(spot.y)][Math.round(spot.x)] ? this.grid[Math.round(spot.y)][Math.round(spot.x)] : undefined;
+    // Перебираем все ячейки, которые Actor готовится занять в цикле
+    // for (let spot of mapActorCoordinates(ghostActor)) {
+    //   if (this.grid[spot.y] && this.grid[spot.y][spot.x]) {
+    //     return this.grid[spot.y][spot.x];
+    //   }
+    // }
+
+    // Выбрал такой способ перебора препятствий, потому что он позволяет "нависать" над краем лавы, не сгорая
+    const obstacleMap = mapActorCoordinates(ghostActor).map(spot => this.grid[spot.y] ? this.grid[spot.y][spot.x] : undefined);
+    if (obstacleMap.indexOf('wall') >= 0) {
+      return 'wall';
     }
+    if (obstacleMap.indexOf('lava') >= 0) {
+      return 'lava';
+    }
+    return undefined;
   }
+
+
   removeActor(actor) {
     let index = this.actors.indexOf(actor);
     if (index < 0) {
@@ -156,12 +171,12 @@ class Level {
   }
 }
 
-// Функция для создания массива со всеми координатами заданной объектом Actor области
+// Функция для создания массива со всеми координатами занимаемой объектом Actor области
 function mapActorCoordinates(actor) {
   const coordinates = [];
-  for (let y = 0; y <= actor.size.x ; y++) {
-    for (let x = 0; x <= actor.size.y ; x++) {
-    coordinates.push({'x': actor.left + x, 'y': actor.top + y});
+  for (let y = 0; y < Math.ceil(actor.top % 1 + actor.size.y) ; y++) {
+    for (let x = 0; x < Math.ceil(actor.left % 1 + actor.size.x) ; x++) {
+    coordinates.push({'x': Math.floor(actor.left) + x, 'y': Math.floor(actor.top) + y});
     }
   }
   return coordinates;
@@ -172,7 +187,7 @@ class LevelParser {
     this.library = library;
   }
   actorFromSymbol(symbol) {
-    return symbol ? this.library[symbol] ? this.library[symbol] : undefined : undefined;
+    return symbol ? this.library[symbol] : undefined;
   }
   obstacleFromSymbol(symbol) {
     switch (symbol) {
@@ -314,7 +329,7 @@ const actorDict = {
 //   [
 //     '         ',
 //     '         ',
-//     '    =    ',
+//     '     =   ',
 //     '       o ',
 //     '     !xxx',
 //     ' @       ',
@@ -332,7 +347,7 @@ const actorDict = {
 //     '         '
 //   ]
 // ];
-//
+
 // const parser = new LevelParser(actorDict);
 // runGame(schemas, parser, DOMDisplay)
 //   .then(() => console.log('Вы выиграли приз!'));
