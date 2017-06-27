@@ -6,8 +6,7 @@ class Vector {
     this.y = y;
   }
   plus(vector) {
-    if (!vector instanceof Vector) {
-      // Тесты не ловят брошенные исключения
+    if (!(vector instanceof Vector)) {
       throw new Error('Можно прибавлять к вектору только вектор типа Vector');
     }
     let sumOfVectors = new Vector;
@@ -25,7 +24,7 @@ class Vector {
 
 class Actor {
   constructor(position = new Vector(0, 0), size = new Vector(1, 1), speed = new Vector(0, 0)) {
-    if (!position instanceof Vector || !size instanceof Vector || !speed instanceof Vector) {
+    if (!(position instanceof Vector) || !(size instanceof Vector) || !(speed instanceof Vector)) {
       throw new Error;
     }
     this.pos = position;
@@ -49,7 +48,7 @@ class Actor {
     return 'actor';
   }
   isIntersect(obstacle) {
-    if (!obstacle || !obstacle instanceof Actor) {
+    if (!obstacle || !(obstacle instanceof Actor)) {
       throw new Error;
     }
     if (obstacle === this) {
@@ -106,7 +105,7 @@ class Level {
     return this.status != null && this.finishDelay < 0 ? true : false;
   }
   actorAt(actor) {
-    if (!actor || !actor instanceof Actor) {
+    if (!actor || !(actor instanceof Actor)) {
       throw new Error;
     }
     for (let actorOnField of this.actors) {
@@ -116,7 +115,7 @@ class Level {
     }
   }
   obstacleAt(target, size) {
-    if (!target instanceof Vector || !size instanceof Vector) {
+    if (!(target instanceof Vector) || !(size instanceof Vector)) {
       throw new Error;
     }
     const ghostActor = new Actor(target, size);
@@ -299,7 +298,7 @@ class Coin extends Actor {
   }
   getNextPosition(time = 1) {
     this.spring += this.springSpeed * time;
-    return this.pos.plus(this.getSpringVector());
+    return this.initialPosition.plus(this.getSpringVector());
   }
   act(time) {
     this.pos = this.getNextPosition(time);
@@ -347,7 +346,7 @@ const actorDict = {
 //     '         '
 //   ]
 // ];
-
+//
 // const parser = new LevelParser(actorDict);
 // runGame(schemas, parser, DOMDisplay)
 //   .then(() => console.log('Вы выиграли приз!'));
