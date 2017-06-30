@@ -9,16 +9,10 @@ class Vector {
     if (!(vector instanceof Vector)) {
       throw new Error('Можно прибавлять к вектору только вектор типа Vector');
     }
-    let sumOfVectors = new Vector;
-    sumOfVectors.x = this.x + vector.x;
-    sumOfVectors.y = this.y + vector.y;
-    return sumOfVectors;
+    return new Vector(this.x + vector.x, this.y + vector.y);;
   }
   times(multip) {
-    let multipVector = new Vector;
-    multipVector.x = this.x * multip;
-    multipVector.y = this.y * multip;
-    return multipVector;
+    return new Vector(this.x * multip, this.y * multip);
   }
 }
 
@@ -102,7 +96,7 @@ class Level {
     return this.actors.filter(actor => actor.type === 'player')[0];
   }
   isFinished() {
-    return this.status != null && this.finishDelay < 0 ? true : false;
+    return this.status !== null && this.finishDelay < 0 ? true : false;
   }
   actorAt(actor) {
     if (!actor || !(actor instanceof Actor)) {
@@ -125,14 +119,6 @@ class Level {
     if (ghostActor.bottom > this.height) {
       return 'lava';
     }
-    // Перебираем все ячейки, которые Actor готовится занять в цикле
-    // for (let spot of mapActorCoordinates(ghostActor)) {
-    //   if (this.grid[spot.y] && this.grid[spot.y][spot.x]) {
-    //     return this.grid[spot.y][spot.x];
-    //   }
-    // }
-
-    // Выбрал такой способ перебора препятствий, потому что он позволяет "нависать" над краем лавы, не сгорая
     const obstacleMap = mapActorCoordinates(ghostActor).map(spot => this.grid[spot.y] ? this.grid[spot.y][spot.x] : undefined);
     if (obstacleMap.indexOf('wall') >= 0) {
       return 'wall';
@@ -140,10 +126,7 @@ class Level {
     if (obstacleMap.indexOf('lava') >= 0) {
       return 'lava';
     }
-    return undefined;
   }
-
-
   removeActor(actor) {
     let index = this.actors.indexOf(actor);
     if (index < 0) {
@@ -155,7 +138,7 @@ class Level {
     return !this.actors.some(actor => actor.type === type);
   }
   playerTouched(obstacle, actor = {}) {
-    if (this.status != null) {
+    if (this.status !== null) {
       return;
     }
     if (obstacle === 'lava' || obstacle === 'fireball') {
@@ -238,9 +221,7 @@ class Fireball extends Actor {
     return 'fireball';
   }
   getNextPosition(time = 1) {
-    const x = this.pos.x + this.speed.x * time;
-    const y = this.pos.y + this.speed.y * time;
-    return new Vector(x, y);
+    return this.pos.plus(this.speed.times(time));
   }
   handleObstacle() {
     this.speed.x *= -1;
