@@ -7,7 +7,7 @@ class Vector {
   }
   plus(vector) {
     if (!(vector instanceof Vector)) {
-      throw new Error('Можно прибавлять к вектору только вектор типа Vector');
+      throw new Error();
     }
     return new Vector(this.x + vector.x, this.y + vector.y);;
   }
@@ -61,13 +61,13 @@ function compareActors(actor, obstacle) {
   if (actor.pos.x === obstacle.pos.x && actor.pos.y === obstacle.pos.y) {
     return true;
   }
-  // Проверяем в отдельном цикле на наличие смежных границ
+  // Check if there are any common borders
   for (let side of DIRECTIONS) {
     if (actor[side[1]] === obstacle[side[0]] || actor[side[0]] === obstacle[side[1]]) {
       return false;
     }
   }
-  // Если границ нет, то проверяем на пересечения
+  // If there are no common borders, check if there are any intersections
   for (let side of DIRECTIONS) {
     if (actor[side[0]] > obstacle[side[1]] || actor[side[1]] < obstacle[side[0]]) {
       return false;
@@ -153,7 +153,7 @@ class Level {
   }
 }
 
-// Функция для создания массива со всеми координатами занимаемой объектом Actor области
+// Function to create array with all coordinates inside an Actor object
 function mapActorCoordinates(actor) {
   const coordinates = [];
   for (let y = 0; y < Math.ceil(actor.top % 1 + actor.size.y) ; y++) {
@@ -303,38 +303,7 @@ const actorDict = {
   'o': Coin
 }
 
-// Проверка кода без loadLevels
-
-// const schemas = [
-//   [
-//     '         ',
-//     '         ',
-//     '     =   ',
-//     '       o ',
-//     '     !xxx',
-//     ' @       ',
-//     'xxx!     ',
-//     '         '
-//   ],
-//   [
-//     '      v  ',
-//     '         ',
-//     '  v      ',
-//     '        o',
-//     '        x',
-//     '@   x    ',
-//     'x        ',
-//     '         '
-//   ]
-// ];
-//
-// const parser = new LevelParser(actorDict);
-// runGame(schemas, parser, DOMDisplay)
-//   .then(() => console.log('Вы выиграли приз!'));
-
-// Проверка кода с loadLevels
-
 const parser = new LevelParser(actorDict);
 
 loadLevels().then(levels => runGame(JSON.parse(levels), parser, DOMDisplay)
-      .then(() => console.log('Вы выиграли приз!')));
+      .then(() => console.log('You won!')));

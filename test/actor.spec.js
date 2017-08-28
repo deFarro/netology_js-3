@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Класс Actor', () => {
+describe('Class Actor', () => {
   let position, size;
 
   beforeEach(() => {
@@ -8,62 +8,62 @@ describe('Класс Actor', () => {
     size = new Vector(5, 5);
   });
 
-  describe('Конструктор new Actor()', () => {
-    it('Создает объект со свойством pos, который является вектором', () => {
+  describe('Constructor new Actor()', () => {
+    it('creates object with pos prop (instance of Vector)', () => {
       const player = new Actor();
 
       expect(player.pos).is.instanceof(Vector);
     });
 
-    it('Создает объект со свойством size, который является вектором', () => {
+    it('creates object with size prop (instance of Vector)', () => {
       const player = new Actor();
 
       expect(player.size).is.instanceof(Vector);
     });
 
-    it('Создает объект со свойством speed, который является вектором', () => {
+    it('creates object with speed prop (instance of Vector)', () => {
       const player = new Actor();
 
       expect(player.speed).is.instanceof(Vector);
     });
 
-    it('Создает объект со свойством type, который является строкой', () => {
+    it('creates object with type prop (string)', () => {
       const player = new Actor();
 
       expect(player.type).to.be.a('string');
     });
 
-    it('Создает объект с методом act', () => {
+    it('creates object with act method', () => {
       const player = new Actor();
 
       expect(player.act).is.instanceof(Function);
     });
 
-    it('По умолчанию создается объект расположенный в точке 0:0', () => {
+    it('default position of new object is 0:0', () => {
       const player = new Actor();
 
       expect(player.pos).is.eql(new Vector(0, 0));
     });
 
-    it('По умолчанию создается объект расмером 1x1', () => {
+    it('default size of new object is 1x1', () => {
       const player = new Actor();
 
       expect(player.size).is.eql(new Vector(1, 1));
     });
 
-    it('По умолчанию создается объект со скоростью 0:0', () => {
+    it('default speed of new object is 0:0', () => {
       const player = new Actor();
 
       expect(player.speed).is.eql(new Vector(0, 0));
     });
 
-    it('По умолчанию создается объект со свойством type равным actor', () => {
+    it('default type of new object is actor', () => {
       const player = new Actor();
 
       expect(player.type).to.equal('actor');
     });
 
-    it('Свойство type нельзя изменить', () => {
+    it('type prop is immutable', () => {
       const player = new Actor();
 
       function fn() {
@@ -73,13 +73,13 @@ describe('Класс Actor', () => {
       expect(fn).to.throw(Error);
     });
 
-    it('Создает объект в заданном расположении, если передать вектор первым аргументом', () => {
+    it('creates object with proper position if instance of Vector is passed in the first argument', () => {
       const player = new Actor(position);
 
       expect(player.pos).is.equal(position);
     });
 
-    it('Бросает исключение, если передать не вектор в качестве расположения', () => {
+    it('throws an errow if the first argument is not an instance of Vecor', () => {
 
       function fn() {
         const player = new Actor({ x: 12, y: 24 });
@@ -88,13 +88,13 @@ describe('Класс Actor', () => {
       expect(fn).to.throw(Error);
     });
 
-    it('Создает объект заданного размера, если передать вектор вторым аргументом', () => {
+    it('creates object with proper size if instance of Vector is passed in the second argument', () => {
       const player = new Actor(undefined, size);
 
       expect(player.size).is.equal(size);
     });
 
-    it('Бросает исключение, если передать не вектор в качестве размера', () => {
+    it('throws an errow if the second argument is not an instance of Vecor', () => {
 
       function fn() {
         const player = new Actor(undefined, { x: 12, y: 24 });
@@ -103,7 +103,7 @@ describe('Класс Actor', () => {
       expect(fn).to.throw(Error);
     });
 
-    it('Бросает исключение, если передать не вектор в качестве скорости', () => {
+    it('throws an errow if the third argument (speed) is not an instance of Vecor', () => {
 
       function fn() {
         const player = new Actor(undefined, undefined, { x: 12, y: 24 });
@@ -113,34 +113,34 @@ describe('Класс Actor', () => {
     });
   });
 
-  describe('Границы объекта', () => {
-    it('Имеет свойство left, которое содержит координату левой границы объекта по оси X', () => {
+  describe('Object borders', () => {
+    it('has property left, which contains coordinate of the objects left border (axis X)', () => {
       const player = new Actor(position, size);
 
       expect(player.left).is.equal(30);
     });
 
-    it('Имеет свойство right, которое содержит координату правой границы объекта оп оси X', () => {
+    it('has property right, which contains coordinate of the objects right border (axis X)', () => {
       const player = new Actor(position, size);
 
       expect(player.right).is.equal(35);
     });
 
-    it('Имеет свойство top, которое содержит координату верхней границы объекта по оси Y', () => {
+    it('has property top, which contains coordinate of the objects top border (axis Y)', () => {
       const player = new Actor(position, size);
 
       expect(player.top).is.equal(50);
     });
 
-    it('Имеет свойство bottom, которое содержит координату правой границы объекта оп оси Y', () => {
+    it('has property bottom, which contains coordinate of the objects bottom border (axis Y)', () => {
       const player = new Actor(position, size);
 
       expect(player.bottom).is.equal(55);
     });
   });
 
-  describe('Метод isIntersect', () => {
-    it('Если передать объект не являющийся экземпляром Actor, то получим исключение', () => {
+  describe('isIntersect method', () => {
+    it('throws an error if argument is not instance of the Actor class', () => {
       const player = new Actor();
 
       function fn() {
@@ -150,7 +150,7 @@ describe('Класс Actor', () => {
       expect(fn).to.throw(Error);
     });
 
-    it('Объект не пересекается сам с собой', () => {
+    it('object does not intersect itself', () => {
       const player = new Actor(position, size);
 
       const notIntersected = player.isIntersect(player);
@@ -158,7 +158,7 @@ describe('Класс Actor', () => {
       expect(notIntersected).is.equal(false);
     });
 
-    it('Объект не пересекается с объектом расположенным очень далеко', () => {
+    it('object does not intersect far away object', () => {
       const player = new Actor(new Vector(0, 0));
       const coin = new Actor(new Vector(100, 100));
 
@@ -167,7 +167,7 @@ describe('Класс Actor', () => {
       expect(notIntersected).is.equal(false);
     });
 
-    it('Объект не пересекается с объектом со смежными границами', () => {
+    it('object does not intersect another object with a common border', () => {
       const player = new Actor(position, size);
 
       const moveX = new Vector(1, 0);
@@ -187,7 +187,7 @@ describe('Класс Actor', () => {
       });
     });
 
-    it('Объект не пересекается с объектом расположенным в той же точке, но имеющим отрицательный вектор размера', () => {
+    it('object does not intersect another object which is placed on the same coordinatesm but has negative size vector', () => {
       const player = new Actor(new Vector(0, 0), new Vector(1, 1));
       const coin = new Actor(new Vector(0, 0), new Vector(1, 1).times(-1));
 
@@ -196,7 +196,7 @@ describe('Класс Actor', () => {
       expect(notIntersected).is.equal(false);
     });
 
-    it('Объект пересекается с объектом, который полностью содержится в нём', () => {
+    it('object do intersect another object which it fully contains', () => {
       const player = new Actor(new Vector(0, 0), new Vector(100, 100));
       const coin = new Actor(new Vector(10, 10), new Vector());
 
@@ -205,7 +205,7 @@ describe('Класс Actor', () => {
       expect(intersected).is.equal(true);
     });
 
-    it('Объект пересекается с объектом, который частично содержится в нём', () => {
+    it('object do intersect another object which it partly contains', () => {
       const player = new Actor(position, size);
 
       const moveX = new Vector(1, 0);

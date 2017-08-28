@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Класс Level', () => {
+describe('Class Level', () => {
   const Player = extend(Actor, { type: { value: 'player' }});
   const Mushroom = extend(Actor, { type: { value: 'mushroom' }});
   const Gift = extend(Actor, { type: { value: 'gift' }});
@@ -15,29 +15,22 @@ describe('Класс Level', () => {
     giftSmall = new Gift;
     goldCoin = new Coin;
     bronzeCoin = new Coin;
-
-    player.title = 'Игрок';
-    mushroom.title = 'Гриб';
-    giftBig.title = 'Большой сюрприз';
-    giftSmall.title = 'Маленький сюрприз';
-    goldCoin.title = 'Золотая монета';
-    bronzeCoin.title = 'Бронзовая монета';
   });
 
-  describe('Конструктор new Level', () => {
-    it('Высота пустого уровня равна 0', () => {
+  describe('Constructor new Level', () => {
+    it('empty level is 0 rows high', () => {
       const level = new Level();
 
       expect(level.height).to.equal(0);
     });
 
-    it('Ширина пустого уровня равна 0', () => {
+    it('empty level is 0 columns wide', () => {
       const level = new Level();
 
       expect(level.width).to.equal(0);
     });
 
-    it('Высота уровня равна количеству строк сетки', () => {
+    it('level height equals to amount of grid rows', () => {
       const lines = 100;
       const grid = new Array(lines);
 
@@ -46,7 +39,7 @@ describe('Класс Level', () => {
       expect(level.height).to.equal(lines);
     });
 
-    it('Ширина уровня равна количеству ячеек сетки', () => {
+    it('level width equals to amount of line cells', () => {
       const lines = 100;
       const cells = 50;
       const grid = new Array(lines).fill(new Array(cells));
@@ -56,7 +49,7 @@ describe('Класс Level', () => {
       expect(level.width).to.equal(cells);
     });
 
-    it('Если в строках разное количество ячеек, то ширина уровня равна количеству ячеек в самой длинной строке', () => {
+    it('level width is equal to length of the longest row', () => {
       const lines = 100;
       const cells = 50;
       const maxCells = 100;
@@ -68,34 +61,34 @@ describe('Класс Level', () => {
       expect(level.width).to.equal(maxCells);
     });
 
-    it('Имеет свойство status равное null', () => {
+    it('level has prop status equals to null', () => {
       const level = new Level();
 
       expect(level.status).to.be.null;
     });
 
-    it('Имеет свойство finishDelay равное 1', () => {
+    it('has prop finishDelay equals to 1', () => {
       const level = new Level();
 
       expect(level.finishDelay).to.equal(1);
     });
 
-    it('Имеет свойство actors, в котором все движущиеся переданные в конструктор', () => {
+    it('has prop actors with all moving elements that passed in the constructor', () => {
       const actors = [ player ];
       const level = new Level(undefined, actors);
 
       expect(level.actors).to.eql(actors);
     });
 
-    it('Имеет свойство player, в котором движущийся объект со свойством type равным player', () => {
+    it('has prop player with object which type props equals to player', () => {
       const level = new Level(undefined, [ player, mushroom ]);
 
       expect(level.player).to.equal(player);
     });
   });
 
-  describe('Метод isFinished', () => {
-    it('По умолчанию вернет false', () => {
+  describe('isFinished method', () => {
+    it('returns false by default', () => {
       const level = new Level();
 
       const isNotFinished = level.isFinished();
@@ -103,7 +96,7 @@ describe('Класс Level', () => {
       expect(isNotFinished).to.be.false;
     });
 
-    it('Вернут true, если status будет не равен null, и finishDelay меньше нуля', () => {
+    it('return true if status is not equal to null and finishDelay is less then 0', () => {
       const level = new Level();
 
       level.status = 'lost';
@@ -113,7 +106,7 @@ describe('Класс Level', () => {
       expect(isFinished).to.be.true;
     });
 
-    it('Вернут false, если status будет не равен null, но finishDelay будет больше нуля', () => {
+    it('returns false if status is not equal to null but finishDelay is more then 0', () => {
       const level = new Level();
 
       level.status = 'lost';
@@ -123,9 +116,9 @@ describe('Класс Level', () => {
     });
   });
 
-  describe('Метод actorAt', () => {
+  describe('actorAt method', () => {
 
-    it('Выбросит исключение если передать не движущийся объект Actor', () => {
+    it('throws an error is passed anything but instance of the Actor', () => {
       const level = new Level(undefined, [ player ]);
 
       function fn() {
@@ -135,7 +128,7 @@ describe('Класс Level', () => {
       expect(fn).to.throw(Error);
     });
 
-    it('Вернет undefined для пустого уровня', () => {
+    it('returns undefined for empty level', () => {
       const level = new Level();
 
       const noActor = level.actorAt(player);
@@ -143,7 +136,7 @@ describe('Класс Level', () => {
       expect(noActor).to.be.undefined;
     });
 
-    it('Вернет undefined для уровня в котором только один движущийся объект', () => {
+    it('returns undefined if level contains only one moving object', () => {
       const level = new Level(undefined, [ player ]);
 
       const noActor = level.actorAt(player);
@@ -151,7 +144,7 @@ describe('Класс Level', () => {
       expect(noActor).to.be.undefined;
     });
 
-    it('Вернет undefined если ни один объект игрового поля не пересекается с переданным объектом', () => {
+    it('returns undefined if none of the moving objects is intersecting passed object', () => {
       const player = new Player(new Vector(1, 1));
       const level = new Level(undefined, [ player, mushroom ]);
 
@@ -160,7 +153,7 @@ describe('Класс Level', () => {
       expect(actor).to.be.undefined;
     });
 
-    it('Вернет объект игрового поля, который пересекается с переданным объектом', () => {
+    it('returns object which is intersecting with passed object', () => {
       const level = new Level(undefined, [ player, mushroom ]);
 
       const actor = level.actorAt(player);
@@ -170,7 +163,7 @@ describe('Класс Level', () => {
 
   });
 
-  describe('Метод obstacleAt', () => {
+  describe('obstacleAt method', () => {
     const gridSize = 2;
     let grid, wallGrid, lavaGrid, size;
 
@@ -181,7 +174,7 @@ describe('Класс Level', () => {
       size = new Vector(1, 1);
     });
 
-    it('Вернет undefined если объект не выходит за пределы уровня и ни с чем не пересекается', () => {
+    it('returns undefined if passed object is inside level borders and does not intersect anything', () => {
       const level = new Level(grid);
       const position = new Vector(0, 0);
 
@@ -190,7 +183,7 @@ describe('Класс Level', () => {
       expect(wall).to.be.undefined;
     });
 
-    it('Вернет строку wall если левая граница объекта выходит за пределы уровня', () => {
+    it('returns wall string if objects left border is out of level bounds', () => {
       const level = new Level(grid);
       const position = new Vector(-1, 0);
 
@@ -199,7 +192,7 @@ describe('Класс Level', () => {
       expect(wall).to.be.equal('wall');
     });
 
-    it('Вернет строку wall если правая граница объекта выходит за пределы уровня', () => {
+    it('returns wall string if objects right border is out of level bounds', () => {
       const level = new Level(grid);
       const position = new Vector(gridSize, 0);
 
@@ -208,7 +201,7 @@ describe('Класс Level', () => {
       expect(wall).to.be.equal('wall');
     });
 
-    it('Вернет строку wall если верхняя граница объекта выходит за пределы уровня', () => {
+    it('returns wall string if objects top border is out of level bounds', () => {
       const level = new Level(grid);
       const position = new Vector(0, -1);
 
@@ -217,7 +210,7 @@ describe('Класс Level', () => {
       expect(wall).to.be.equal('wall');
     });
 
-    it('Вернет строку lava если нижняя граница объекта выходит за пределы уровня', () => {
+    it('returns lava string if objects bottom border is out of level bounds', () => {
       const level = new Level(grid);
       const position = new Vector(0, gridSize);
 
@@ -226,7 +219,7 @@ describe('Класс Level', () => {
       expect(wall).to.be.equal('lava');
     });
 
-    it('Вернет строку wall если площадь пересекается со стеной', () => {
+    it('returns wall string if objects intersects a wall', () => {
       const level = new Level(wallGrid);
       const position = new Vector(0, 0);
 
@@ -235,7 +228,7 @@ describe('Класс Level', () => {
       expect(wall).to.be.equal('wall');
     });
 
-    it('Вернет строку lava если площадь пересекается с лавой', () => {
+    it('returns lava string if objects intersects a lava', () => {
       const level = new Level(lavaGrid);
       const position = new Vector(0, 0);
 
@@ -244,7 +237,7 @@ describe('Класс Level', () => {
       expect(wall).to.be.equal('lava');
     });
 
-    it('Вернет строку wall если площадь пересекается со стеной и объект имеет не целочисленные координаты', () => {
+    it('returns wall string if objects intersects a wall and objects coordinates are not round numbers', () => {
       const level = new Level(wallGrid);
       const position = new Vector(0.5, 0.5);
 
@@ -253,7 +246,7 @@ describe('Класс Level', () => {
       expect(wall).to.be.equal('wall');
     });
 
-    it('Вернет строку wall если площадь пересекается со стеной и объект имеет не целочисленный размер', () => {
+    it('returns wall string if objects intersects a wall and objects size is not round number', () => {
       const level = new Level(wallGrid);
       const position = new Vector(0, 0);
       const size = new Vector(0.5, 0.5);
@@ -264,8 +257,8 @@ describe('Класс Level', () => {
     });
   });
 
-  describe('Метод removeActor', () => {
-    it('Удаляет переданный движущийся объект', () => {
+  describe('removeActor method', () => {
+    it('removes moving object', () => {
       const level = new Level(undefined, [ mushroom, giftSmall ]);
 
       level.removeActor(mushroom);
@@ -273,7 +266,7 @@ describe('Класс Level', () => {
       expect(level.actors.includes(mushroom)).to.be.false;
     });
 
-    it('Не удаляет остальные движущиеся объекты', () => {
+    it('removes proper moving object', () => {
       const level = new Level(undefined, [ mushroom, giftSmall ]);
 
       level.removeActor(mushroom);
@@ -282,29 +275,29 @@ describe('Класс Level', () => {
     });
   });
 
-  describe('Метод noMoreActors', () => {
-    it('Вернет истину, если движущихся объектов нет в уровне', () => {
+  describe('noMoreActors method', () => {
+    it('returns true if there are no moving objects on the level', () => {
       const level = new Level();
 
       expect(level.noMoreActors()).to.be.true;
     });
 
-    it('Вернет истину, если в уровне нет движущихся объектов заданного типа', () => {
+    it('returns true if there are on moving objects of exact type ob the level', () => {
       const level = new Level(undefined, [ mushroom, giftSmall ]);
 
       expect(level.noMoreActors('actor')).to.be.true;
     });
 
-    it('Вернет ложь, если в уровне есть движущихся объекты заданного типа', () => {
+    it('returns true if there are any moving objects on the level', () => {
       const level = new Level(undefined, [ mushroom, giftSmall ]);
 
       expect(level.noMoreActors('mushroom')).to.be.false;
     });
   });
 
-  describe('Метод playerTouched', () => {
+  describe('playerTouched method', () => {
 
-    it('Если передать lava первым аргументом, меняет статус уровня на lost', () => {
+    it('changes level status to lost if string lava is passed', () => {
       const level = new Level();
 
       level.playerTouched('lava');
@@ -312,7 +305,7 @@ describe('Класс Level', () => {
       expect(level.status).to.equal('lost');
     });
 
-    it('Если передать fireball первым аргументом, меняет статус уровня на lost', () => {
+    it('changes level status to lost if string fireball is passed', () => {
       const level = new Level();
 
       level.playerTouched('fireball');
@@ -320,7 +313,7 @@ describe('Класс Level', () => {
       expect(level.status).to.equal('lost');
     });
 
-    it('Если передать coin первым аргументом и движущийся объект вторым, удаляет этот объект из уровня', () => {
+    it('if string coin and coin object are passed method removes object from the level', () => {
       const level = new Level(undefined, [ goldCoin, bronzeCoin ]);
 
       level.playerTouched('coin', goldCoin);
@@ -329,7 +322,7 @@ describe('Класс Level', () => {
       expect(level.actors).to.not.include(goldCoin);
     });
 
-    it('Если удалить все монеты, то статус меняется на won', () => {
+    it('if all coins are removed status is changed to won', () => {
       const level = new Level(undefined, [ goldCoin, bronzeCoin ]);
 
       level.playerTouched('coin', goldCoin);

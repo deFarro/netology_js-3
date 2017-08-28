@@ -1,17 +1,17 @@
 'use strict';
 
-describe('Класс Vector', () => {
+describe('Class Vector', () => {
   const x = 3, y = 7, left = 5, top = 10, n = 5;
 
-  describe('Конструктор new Vector()', () => {
-    it('создает объект со свойствами x и y равными аргументам конструктора', () => {
+  describe('Constructor new Vector()', () => {
+    it('creates object with x and y props which are equal to passed arguments', () => {
       const position = new Vector(left, top);
 
       expect(position.x).is.equal(left);
       expect(position.y).is.equal(top);
     });
 
-    it('без аргументов создает объект со свойствами x и y равными 0', () => {
+    it('default props are 0: 0', () => {
       const position = new Vector();
 
       expect(position.x).is.equal(0);
@@ -20,8 +20,8 @@ describe('Класс Vector', () => {
 
   });
 
-  describe('Метод plus()', () => {
-    it('бросает исключение, если передать не вектор', () => {
+  describe('plus() method', () => {
+    it('throws an Error if passed anything by instance of the Vector class', () => {
       const position = new Vector(x, y);
 
       function fn() {
@@ -31,7 +31,7 @@ describe('Класс Vector', () => {
       expect(fn).to.throw(Error);
     });
 
-    it('создает новый вектор', () => {
+    it('creates a new vector', () => {
       const position = new Vector(x, y);
 
       const newPosition = position.plus(new Vector(left, top));
@@ -39,7 +39,7 @@ describe('Класс Vector', () => {
       expect(newPosition).is.instanceof(Vector);
     });
 
-    it('координаты нового вектора равны сумме координат суммируемых', () => {
+    it('new vectors coordinates are equal to the sum of initial vector and the one passed in arguments', () => {
       const position = new Vector(x, y);
 
       const newPosition = position.plus(new Vector(left, top));
@@ -49,8 +49,8 @@ describe('Класс Vector', () => {
     });
   });
 
-  describe('Метод times()', () => {
-    it('создает новый вектор', () => {
+  describe('times() method', () => {
+    it('creates a new vector', () => {
       const position = new Vector(x, y);
 
       const newPosition = position.times(n);
@@ -58,7 +58,7 @@ describe('Класс Vector', () => {
       expect(newPosition).is.instanceof(Vector);
     });
 
-    it('координаты нового вектора увеличины в n раз', () => {
+    it('coordinates of the new vector are multiplied by n', () => {
       const position = new Vector(x, y);
 
       const newPosition = position.times(n);

@@ -5,12 +5,21 @@
   "main": "index.html",
   "scripts": {
     "start": "browser-sync start --server --files \"**/*.*\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Please find tests with HTML interface in test/index.html\" && exit 1",
+    "build": "babel js/src -d js",
+    "build:watch": "babel js/src -d js -w"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Nikita Svelov",
+  "license": "MIT",
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
     "browser-sync": "^2.18.8"
   }
 }

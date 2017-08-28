@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Класс Fireball', () => {
+describe('Class Fireball', () => {
   let time, speed, position;
 
   beforeEach(() => {
@@ -9,34 +9,34 @@ describe('Класс Fireball', () => {
     position = new Vector(5, 5);
   });
 
-  describe('Конструктор new Fireball', () => {
-    it('Созданный объект является экземпляром Actor', () => {
+  describe('Constructor new Fireball', () => {
+    it('creates an instance of Actor class', () => {
       const ball = new Fireball();
 
       expect(ball).to.be.an.instanceof(Actor);
     });
 
-    it('Имеет свойство type равное fireball', () => {
+    it('has prop type equals to fireball', () => {
       const ball = new Fireball();
 
       expect(ball.type).to.equal('fireball');
     });
 
-    it('Имеет свойство speed равное вектору Vector переданному вторым аргументом', () => {
-      const ball = new Fireball(undefined, speed);
-
-      expect(ball.speed).to.eql(speed);
-    });
-
-    it('Свойство pos равно вектору Vector переданному первым аргументом', () => {
+    it('has prop position which is passed in the first argument', () => {
       const ball = new Fireball(position);
 
       expect(ball.pos).to.equal(position);
     });
+
+    it('has prop speed which is passed in the second argument', () => {
+      const ball = new Fireball(undefined, speed);
+
+      expect(ball.speed).to.eql(speed);
+    });
   });
 
-  describe('Метод getNextPosition', () => {
-    it('Вернет ту же позицию для объекта с нулевой скоростью', () => {
+  describe('getNextPosition method', () => {
+    it('returns the same position for an object with speed equals to 0', () => {
       const zeroSpeed = new Vector(0, 0);
       const ball = new Fireball(position, zeroSpeed);
 
@@ -45,7 +45,7 @@ describe('Класс Fireball', () => {
       expect(nextPosition).to.eql(position);
     });
 
-    it('Вернет новую позицию, увеличенную на вектор скорости', () => {
+    it('returns new position raised by speed vector', () => {
       const ball = new Fireball(position, speed);
 
       const nextPosition = ball.getNextPosition();
@@ -53,7 +53,7 @@ describe('Класс Fireball', () => {
       expect(nextPosition).to.eql(new Vector(6, 5));
     });
 
-    it('Если передать время первым аргументом, то вернет новую позицию увелеченную на вектор скорости помноженный на переданное время', () => {
+    it('returns new position raised by speed vector multiplied by time if it is passed in the first argument', () => {
       const ball = new Fireball(position, speed);
 
       const nextPosition = ball.getNextPosition(time);
@@ -62,8 +62,8 @@ describe('Класс Fireball', () => {
     });
   });
 
-  describe('Метод handleObstacle', () => {
-    it('Меняет вектор скорости на противоположный', () => {
+  describe('handleObstacle method', () => {
+    it('changes speed vector to opposite', () => {
       const ball = new Fireball(position, speed);
 
       ball.handleObstacle();
@@ -72,8 +72,8 @@ describe('Класс Fireball', () => {
     });
   });
 
-  describe('Метод act', () => {
-    it('Если препятствий нет, меняет позицию на ту что получена с помощью getNextPosition', () => {
+  describe('act method', () => {
+    it('changes position to a new one (got by getNextPosition method) if there are on obstacles on the way', () => {
       const level = {
         obstacleAt() {
           return false;
@@ -88,7 +88,7 @@ describe('Класс Fireball', () => {
       expect(ball.pos).to.eql(nextPosition);
     });
 
-    it('При столкновении с препятствием не меняет позицию объекта, меняет вектор скорости на противоположный', () => {
+    it('changes speed vector to opposite when hit obstacle', () => {
       const level = {
         obstacleAt() {
           return true;
@@ -102,7 +102,7 @@ describe('Класс Fireball', () => {
       expect(ball.pos).to.eql(position);
     });
 
-    it('Вызывает level.obstacleAt со своим вектором размера', () => {
+    it('calls level.obstacleAt method with own size vector', () => {
       const ball = new Fireball(position, speed);
       let isCalled = false;
       const level = {
@@ -116,7 +116,7 @@ describe('Класс Fireball', () => {
       expect(isCalled).to.be.true;
     });
 
-    it('Вызывает level.obstacleAt с вектором новой позиции', () => {
+    it('calls level.obstacleAt with new position vector', () => {
       const ball = new Fireball(position, speed);
       let isCalled = false;
       const level = {

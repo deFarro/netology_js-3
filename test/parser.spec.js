@@ -1,17 +1,17 @@
 'use strict';
 
-describe('Класс LevelParser', () => {
+describe('Class LevelParser', () => {
   const Mushroom = extend(Actor, { type: { value: 'mushroom' }});
   const Gift = extend(Actor, { type: { value: 'gift' }});
   class BadActor {}
 
-  describe('Конструктор new LevelParser()', () => {
+  describe('Constructor new LevelParser()', () => {
   });
 
-  describe('Метод actorFromSymbol', () => {
+  describe('actorFromSymbol method', () => {
 
 
-    it('Вернет undefined, если не передать символ', () => {
+    it('returns undefined if nothing passed', () => {
       const parser = new LevelParser();
 
       const actor = parser.actorFromSymbol();
@@ -19,7 +19,7 @@ describe('Класс LevelParser', () => {
       expect(actor).to.be.undefined;
     });
 
-    it('Вернет undefined, если передать символ которому не назначен конструктор движимого объекта', () => {
+    it('returns undefined if passed unknown symbol', () => {
       const parser = new LevelParser({ y: Mushroom });
 
       const actor = parser.actorFromSymbol('z');
@@ -27,7 +27,7 @@ describe('Класс LevelParser', () => {
       expect(actor).to.be.undefined;
     });
 
-    it('Вернет подходящий конструктор движимого объекта, если передать символ которому он назначен', () => {
+    it('returns proper constructor corresponded to symbol', () => {
       const parser = new LevelParser({ y: Mushroom });
 
       const actor = parser.actorFromSymbol('y');
@@ -36,8 +36,8 @@ describe('Класс LevelParser', () => {
     });
   });
 
-  describe('Метод obstacleFromSymbol', () => {
-    it('Вернет undefined, если не передать символ', () => {
+  describe('obstacleFromSymbol method', () => {
+    it('returns undefined if nothing passed', () => {
       const parser = new LevelParser();
 
       const obstacle = parser.obstacleFromSymbol();
@@ -45,7 +45,7 @@ describe('Класс LevelParser', () => {
       expect(obstacle).to.be.undefined;
     });
 
-    it('Вернет undefined, если передать неизветсный символ', () => {
+    it('returns undefined if passed symbl is unknown', () => {
       const parser = new LevelParser();
 
       const obstacle = parser.obstacleFromSymbol('Z');
@@ -53,7 +53,7 @@ describe('Класс LevelParser', () => {
       expect(obstacle).to.be.undefined;
     });
 
-    it('Вернет wall, если передать символ x', () => {
+    it('returns wall if x passed', () => {
       const parser = new LevelParser();
 
       const obstacle = parser.obstacleFromSymbol('x');
@@ -61,7 +61,7 @@ describe('Класс LevelParser', () => {
       expect(obstacle).to.equal('wall');
     });
 
-    it('Вернет lava, если передать символ !', () => {
+    it('returns lava if ! passed', () => {
       const parser = new LevelParser();
 
       const obstacle = parser.obstacleFromSymbol('!');
@@ -70,7 +70,7 @@ describe('Класс LevelParser', () => {
     });
   });
 
-  describe('Метод createGrid', () => {
+  describe('createGrid method', () => {
     let plan;
 
     beforeEach(() => {
@@ -80,7 +80,7 @@ describe('Класс LevelParser', () => {
       ];
     });
 
-    it('Вернет пустой массив, если передать пустой план', () => {
+    it('returns empty array if empty plan is passed', () => {
       const parser = new LevelParser();
 
       const grid = parser.createGrid([]);
@@ -88,7 +88,7 @@ describe('Класс LevelParser', () => {
       expect(grid).to.eql([]);
     });
 
-    it('Вернет массив того же размера что и plan', () => {
+    it('retrund array has the same length as passed plan', () => {
       const parser = new LevelParser();
 
       const grid = parser.createGrid(plan);
@@ -96,7 +96,7 @@ describe('Класс LevelParser', () => {
       expect(grid.length).to.equal(plan.length);
     });
 
-    it('В ряду будет столько элементов, сколько символов в строке плана', () => {
+    it('row contains the same amount of cells as row in a plan contains', () => {
       const parser = new LevelParser();
 
       const grid = parser.createGrid(plan);
@@ -106,7 +106,7 @@ describe('Класс LevelParser', () => {
       });
     });
 
-    it('Символы x определит как wall и поместит в соответствующую ячейку', () => {
+    it('x symbols tranformed into walls and placed on proper coordinates', () => {
       const parser = new LevelParser();
 
       const grid = parser.createGrid(plan);
@@ -114,7 +114,7 @@ describe('Класс LevelParser', () => {
       expect(grid[0]).to.eql(['wall',undefined,undefined,'wall']);
     });
 
-    it('Символы ! определит как lava и поместит в соответствующую ячейку', () => {
+    it('! symbols tranformed into lava and placed on proper coordinates', () => {
       const parser = new LevelParser();
 
       const grid = parser.createGrid(plan);
@@ -123,7 +123,7 @@ describe('Класс LevelParser', () => {
     });
   });
 
-  describe('Метод createActors', () => {
+  describe('createActors method', () => {
     let plan;
 
     beforeEach(() => {
@@ -134,7 +134,7 @@ describe('Класс LevelParser', () => {
       ];
     });
 
-    it('Вернет пустой массив, если передать пустой план', () => {
+    it('returns empty array if empty plan is passed', () => {
       const parser = new LevelParser({ o: Gift, z: Mushroom });
 
       const actors = parser.createActors([]);
@@ -142,7 +142,7 @@ describe('Класс LevelParser', () => {
       expect(actors).to.eql([]);
     });
 
-    it('Вернет пустой массив, если не определить символы движущихся объектов', () => {
+    it('returns empty array if symbols for actors werent defined', () => {
       const parser = new LevelParser();
 
       const actors = parser.createActors(plan);
@@ -150,7 +150,7 @@ describe('Класс LevelParser', () => {
       expect(actors).to.eql([]);
     });
 
-    it('Игнорирует символы, для которых в словаре не задан символ', () => {
+    it('ingores symbols that cant be found in database', () => {
       const parser = new LevelParser({ z: 'mushroom' });
 
       const actors = parser.createActors(['m']);
@@ -158,7 +158,7 @@ describe('Класс LevelParser', () => {
       expect(actors).to.eql([]);
     });
 
-    it('Игнорирует символы, для которых в словаре передана не функция', () => {
+    it('ingores symbols that are not corresponding to functions', () => {
       const parser = new LevelParser({ z: 'mushroom' });
 
       const actors = parser.createActors(['z']);
@@ -166,7 +166,7 @@ describe('Класс LevelParser', () => {
       expect(actors).to.eql([]);
     });
 
-    it('Игнорирует символы, для которых в словаре передан конструктор не Actor', () => {
+    it('ingores symbols that are not corresponding to Actor instances', () => {
       const parser = new LevelParser({ b: BadActor });
 
       const actors = parser.createActors(['b']);
@@ -174,7 +174,7 @@ describe('Класс LevelParser', () => {
       expect(actors).to.eql([]);
     });
 
-    it('Создает движущиеся объекты для конструктора Actor', () => {
+    it('creates moving object to Actor constractors', () => {
       const parser = new LevelParser({ z: Actor });
 
       const actors = parser.createActors(['z']);
@@ -182,7 +182,7 @@ describe('Класс LevelParser', () => {
       expect(actors).to.have.length(1);
     });
 
-    it('Создает движущиеся объекты правильного типа для конструктора Actor ', () => {
+    it('created objects have proper types (Actor)', () => {
       const parser = new LevelParser({ z: Actor });
 
       const actors = parser.createActors(['z']);
@@ -190,7 +190,7 @@ describe('Класс LevelParser', () => {
       expect(actors[0]).to.be.an.instanceof(Actor);
     });
 
-    it('Создает движущиеся объекты для конструкторов типа Actor', () => {
+    it('creates objects with constuctors which extending Actor class', () => {
       const parser = new LevelParser({ z: Mushroom });
 
       const actors = parser.createActors(['z']);
@@ -198,7 +198,7 @@ describe('Класс LevelParser', () => {
       expect(actors).to.have.length(1);
     });
 
-    it('Создает движущиеся объекты правильного типа для конструкторов типа Actor ', () => {
+    it('created objects have proper types (Player, Coin, etc)', () => {
       const parser = new LevelParser({ z: Mushroom });
 
       const actors = parser.createActors(['z']);
@@ -206,7 +206,7 @@ describe('Класс LevelParser', () => {
       expect(actors[0]).to.be.an.instanceof(Mushroom);
     });
 
-    it('Вернет массив со всеми движущимися объектами, если передать план', () => {
+    it('returns an array with all moving objects', () => {
       const parser = new LevelParser({ o: Gift, z: Mushroom });
 
       const actors = parser.createActors(plan);
@@ -214,7 +214,7 @@ describe('Класс LevelParser', () => {
       expect(actors).to.have.length(5);
     });
 
-    it('Каждый движущийся объект будет экземпляром своего класса', () => {
+    it('each moving object is an instance of its own class', () => {
       const parser = new LevelParser({ o: Gift, z: Mushroom });
 
       const actors = parser.createActors(plan);
@@ -225,7 +225,7 @@ describe('Класс LevelParser', () => {
       expect(zActors).to.have.length(1);
     });
 
-    it('Каждый движущийся объект будет иметь координаты той ячейки, где он размещен на плане', () => {
+    it('each moving object has proper coordinates on the level', () => {
       const parser = new LevelParser({ o: Actor, z: Actor });
 
       const actors = parser.createActors(plan);
@@ -238,7 +238,7 @@ describe('Класс LevelParser', () => {
     });
   });
 
-  describe('Метод parse', () => {
+  describe('parse method', () => {
     let plan;
 
     beforeEach(() => {
@@ -249,7 +249,7 @@ describe('Класс LevelParser', () => {
       ];
     });
 
-    it('Вернет объект уровня, Level', () => {
+    it('returns level object', () => {
       const parser = new LevelParser();
 
       const level = parser.parse([]);
@@ -257,7 +257,7 @@ describe('Класс LevelParser', () => {
       expect(level).to.be.an.instanceof(Level);
     });
 
-    it('Высота уровня будет равна количеству строк плана', () => {
+    it('levels height is equal to amount of rows in a plan', () => {
       const parser = new LevelParser();
 
       const level = parser.parse(plan);
@@ -265,7 +265,7 @@ describe('Класс LevelParser', () => {
       expect(level.height).to.equal(3);
     });
 
-    it('Ширина уровня будет равна количеству символов в максимальной строке плана', () => {
+    it('levels width is equal to the length of the longest row in a plan', () => {
       const parser = new LevelParser();
 
       const level = parser.parse(plan);
@@ -273,7 +273,7 @@ describe('Класс LevelParser', () => {
       expect(level.width).to.equal(5);
     });
 
-    it('Создаст уровень с движущимися объектами из плана', () => {
+    it('creates level with moving objects from a plan object', () => {
       const parser = new LevelParser({ o: Gift, z: Mushroom });
 
       const level = parser.parse(plan);
@@ -281,7 +281,7 @@ describe('Класс LevelParser', () => {
       expect(level.actors).to.have.length(5);
     });
 
-    it('Создаст уровень с припятствиями из плана', () => {
+    it('creates level with obstacles from a plan object', () => {
       const parser = new LevelParser();
 
       const level = parser.parse(plan);
